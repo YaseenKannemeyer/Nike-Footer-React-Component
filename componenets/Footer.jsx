@@ -2,51 +2,59 @@
 
 import React, { useState } from "react";
 import { ChevronDown, Globe } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+
+
 
 
 const footerLinks = [
     {
         title: "Resources",
         links: [
-            "Find a Store",
-            "Nike Journal",
-            "Become a Member",
-            "Feedback",
-            "Promo Codes",
-            "Product Advice",
-            "Running Shoe Finder",
+            { name: "Find a Store", href: "/find-a-store" },
+            { name: "Nike Journal", href: "/nike-journal" },
+            { name: "Become a Member", href: "/become-a-member" },
+            { name: "Feedback", href: "/feedback" },
+            { name: "Promo Codes", href: "/promo-codes" },
+            { name: "Product Advice", href: "/product-advice" },
+            { name: "Running Shoe Finder", href: "/running-shoe-finder" },
         ],
     },
     {
         title: "Help",
         links: [
-            "Get Help",
-            "Order Status",
-            "Shipping and Delivery",
-            "Returns",
-            "Payment Options",
-            "Contact Us",
-            "Reviews",
+            { name: "Get Help", href: "/get-help" },
+            { name: "Order Status", href: "/order-status" },
+            { name: "Shipping and Delivery", href: "/shipping-and-delivery" },
+            { name: "Returns", href: "/returns" },
+            { name: "Payment Options", href: "/payment-options" },
+            { name: "Contact Us", href: "/contact-us" },
+            { name: "Reviews", href: "/reviews" },
         ],
     },
     {
         title: "Company",
         links: [
-            "About Nike",
-            "News",
-            "Careers",
-            "Investors",
-            "Sustainability",
-            "Purpose",
-            "Nike Coaching",
-            "Report a concern",
+            { name: "About Nike", href: "/about-nike" },
+            { name: "News", href: "/news" },
+            { name: "Careers", href: "/careers" },
+            { name: "Investors", href: "/investors" },
+            { name: "Sustainability", href: "/sustainability" },
+            { name: "Purpose", href: "/purpose" },
+            { name: "Nike Coaching", href: "/nike-coaching" },
+            { name: "Report a concern", href: "/report-a-concern" },
         ],
     },
     {
         title: "Community Discounts",
-        links: ["Student", "Teacher"],
+        links: [
+            { name: "Student", href: "/student" },
+            { name: "Teacher", href: "/teacher" },
+        ],
     },
 ];
+
 
 export default function Footer() {
     const [openIndex, setOpenIndex] = useState(null);
@@ -62,35 +70,49 @@ export default function Footer() {
                 {/* ================= MOBILE (Accordion) ================= */}
                 <div className="md:hidden">
                     {footerLinks.map((section, index) => (
-                        <div key={section.title} className=" border-b mt-2 mb-2 border-white text-md">
+                        <div key={section.title} className="border-b mt-2 mb-2 border-white text-md">
+                            {/* Accordion Header */}
                             <button
                                 onClick={() => toggle(index)}
-                                className="w-full flex justify-between items-center py-4 "
+                                className="w-full flex justify-between items-center py-4"
                             >
                                 {section.title}
-                                <ChevronDown
-                                    className={` w-6 h-auto transition-transform ${openIndex === index ? "rotate-180" : ""
-                                        }`}
-                                />
+                                <motion.div
+                                    animate={{ rotate: openIndex === index ? 180 : 0 }}
+                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                >
+                                    <ChevronDown className="w-6 h-auto" />
+                                </motion.div>
                             </button>
 
-                            <div
-                                className={`overflow-hidden transition-all duration-300 ${openIndex === index ? "max-h-96" : "max-h-0"
-                                    }`}
-                            >
-                                <ul className="pl-2 pb-4 space-y-3 text-white text-sm">
-                                    {section.links.map((link) => (
-                                        <li key={link}>
-                                            <a href="#" className="block hover:text-gray-300">
-                                                {link}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            {/* Accordion Content */}
+                            <AnimatePresence initial={false}>
+                                {openIndex === index && (
+                                    <motion.div
+                                        key="content"
+                                        initial={{ height: 0, opacity: 0 }}
+                                        animate={{ height: "auto", opacity: 1 }}
+                                        exit={{ height: 0, opacity: 0 }}
+                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                        className="overflow-hidden"
+                                    >
+                                        <ul className="pl-2 pb-4 space-y-3 text-white text-sm">
+                                            {section.links.map((link) => (
+                                                <li key={link.name}>
+                                                    <Link href={link.href} className="block hover:text-gray-300">
+                                                        {link.name}
+                                                    </Link>
+                                                </li>
+                                            ))}
+
+                                        </ul>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     ))}
                 </div>
+
 
 
                 {/* ================= DESKTOP (Grid) ================= */}
@@ -103,12 +125,13 @@ export default function Footer() {
                             <h4 className="mb-10">{section.title}</h4>
                             <ul className="space-y-3 text-white">
                                 {section.links.map((link) => (
-                                    <li key={link}>
-                                        <a href="#" className="hover:text-black">
-                                            {link}
-                                        </a>
+                                    <li key={link.name}>
+                                        <Link href={link.href} className="block hover:text-gray-300">
+                                            {link.name}
+                                        </Link>
                                     </li>
                                 ))}
+
                             </ul>
                         </div>
                     ))}
@@ -132,9 +155,9 @@ export default function Footer() {
                 {/* ================= BOTTOM BAR ================= */}
                 <div className="py-6 text-sm font-medium text-gray-500 flex flex-col md:flex-row gap-1">
 
-                   <span className="text-gray-500 pb-2 pr-4 md:whitespace-nowrap">
-  © 2026 Nike, Inc. All rights reserved
-</span>
+                    <span className="text-gray-500 pb-2 pr-4 md:whitespace-nowrap">
+                        © 2026 Nike, Inc. All rights reserved
+                    </span>
 
 
                     <div className="flex flex-col md:flex-row gap-3 md:gap-5 w-full">
@@ -148,7 +171,9 @@ export default function Footer() {
 
                         {/* Nike logo */}
                         <a
-                            href="/"
+                            href="https://nike.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="flex items-center  md:ml-auto -mt-5 -ml-3 md:-mt-9"
                         >
                             <img
